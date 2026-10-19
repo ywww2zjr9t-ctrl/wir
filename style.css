@@ -15,3 +15,7 @@ header{display:flex;align-items:center;justify-content:space-between;flex:none;m
 @media(max-height:700px){.cover{width:min(100%,30dvh,265px);height:min(100%,30dvh,265px)}.app{gap:3px}.transport .primary{width:100%;height:auto}}
 @media(max-height:530px){.cover{width:min(100%,24dvh,185px);height:min(100%,24dvh,185px)}.transport button{min-height:36px}.transport .primary{width:100%;height:auto}}
 @media(min-width:750px){.app{padding-top:12px;padding-bottom:12px}.cover{width:min(34dvh,340px);height:min(34dvh,340px)}}
+
+/* 004: Offline-Funktionen ohne zusätzliche Zeile */
+.list-tools{gap:4px}.list-tools button,.list-tools select{padding:6px 6px}.list-tools .download-all{flex:none;min-width:31px;color:#c2d8ea;font-size:17px;line-height:15px;padding:5px 5px;white-space:nowrap}.download-all small{font-size:10px;vertical-align:top;margin-left:1px}.download-all:disabled{opacity:.65}.list-tools select{max-width:108px;min-width:0}.download-track{flex:none;border:0;background:transparent;color:#a6bad0;font-size:21px;min-width:34px;min-height:42px;padding:5px 3px;display:grid;place-items:center}.download-track.saved{color:#8bc7e9}.download-track.busy{color:#e3ca8b}.download-track:focus-visible,.download-all:focus-visible{outline:2px solid var(--accent)}.heart{flex:none;min-width:35px;padding:6px 5px}.track{gap:3px}
+@media(max-width:380px){.list-tools{padding-left:6px;padding-right:6px}.list-tools button,.list-tools select{font-size:10px;padding-left:5px;padding-right:5px}.list-tools select{max-width:94px}.track-name{font-size:12px}}
