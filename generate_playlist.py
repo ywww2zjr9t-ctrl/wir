@@ -56,6 +56,7 @@ def metadata(path):
 
 
 tracks = []
+(ROOT / 'audio').mkdir(exist_ok=True)
 for audio in sorted((ROOT / 'audio').iterdir(), key=lambda p: p.name.casefold()):
     if not audio.is_file() or audio.suffix.lower() not in FORMATS:
         continue
