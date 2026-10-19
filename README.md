@@ -1,19 +1,15 @@
-# wir · Musikplayer 003
+# wir · Musikplayer 004 – Offline-Musik
 
-Kompakte Oberfläche, automatisch geöffnete Playlist, Favoriten pro Titel, 15/30-Sekunden-Kreispfeile, Play/Pause und Aktualisierung über die beiden Kopf-Schaltflächen sowie Pull-to-Refresh. Das Standardcover und die PWA-Icons verwenden die neue Note aus Licht.
+Basiert auf der funktionierenden Version 003. Die vier Wiedergabesymbole und das kompakte Layout bleiben erhalten.
 
-## Update auf GitHub
+## Neu
+- ↓ links vom Herz: Titel vollständig im Browser speichern. ✓: offline vorhanden; Tippen auf ✓ entfernt die Offline-Kopie.
+- ↓ mit Zahl in der bestehenden Filterzeile: lädt nur noch fehlende Titel, nacheinander. ✓ wenn alle gespeichert sind.
+- Gespeicherte Titel werden bevorzugt lokal abgespielt. Offline-Playlist und App-Oberfläche sind nach einem erfolgreichen Online-Aufruf ebenfalls offline verfügbar.
+- Bereits gespeicherte Dateien werden nicht erneut heruntergeladen.
 
-**Wichtig:** Lade den Inhalt dieses Pakets in das Hauptverzeichnis des Repositories hoch, **nicht den übergeordneten Ordner**. Lade den bestehenden Ordner `audio/` nicht erneut hoch und lösche ihn nicht.
-
-Die Datei `playlist.json` ist absichtlich **nicht** enthalten: Sie wird automatisch aus deinen bereits vorhandenen Musikdateien erstellt und soll beim Update nicht durch eine leere Liste überschrieben werden. Die vorhandene `playlist.json` auf GitHub bleibt erhalten.
-
-Der Workflow muss unter `.github/workflows/update-playlist.yml` liegen. Beim Browser-Upload kann GitHub versteckte Ordner auslassen; kontrolliere daher den Workflow im Repository und ersetze ihn nur, falls erforderlich, direkt über den GitHub-Dateieditor.
-
-## Veröffentlichung
-
-Nach dem Commit auf den erfolgreichen GitHub-Pages-Deploy warten. App vollständig schließen und neu öffnen; gegebenenfalls auf `wir.` tippen, um die Musikliste neu zu laden.
+## Installation
+ZIP entpacken und die Dateien aus dem ZIP **im Hauptverzeichnis** des GitHub-Repositories hochladen. Den bestehenden `audio/`-Ordner und die generierte `playlist.json` **nicht löschen**. Die bestehende GitHub-Action unter `.github/workflows/` bleibt unverändert. Beim Browser-Upload können versteckte `.github`-Ordner ausgelassen werden; der Workflow ist bereits im Repository vorhanden.
 
 ## Hinweise
-
-Audioformate MP3, M4A und M4B werden in der Playlist erkannt; die Wiedergabe hängt von den Codecs des jeweiligen Browsers ab. Favoriten und zuletzt ausgewählter Titel werden lokal auf dem jeweiligen Gerät gespeichert.
+Der Speicher ist pro Browser/installierter Web-App getrennt und kann von iOS/macOS bereinigt werden. Die App muss beim Herunterladen geöffnet bleiben. Bereits geöffnete Musikstücke können bei einer Änderung der Datei auf GitHub veralten; eine Erkennung von geänderten Dateiinhalten benötigt zusätzliche Versionsdaten in der Playlist. Für zuverlässige Offline-Nutzung nach dem Update die App einmal online öffnen und Playlist aktualisieren.
