@@ -1,24 +1,28 @@
-# wir · Musikplayer 004.1 – Offline-Musik
+# wir · Musikplayer 004.2 – App- und Playlist-Aktualisierung
 
-Basiert auf der funktionierenden Version 003. Die vier Wiedergabesymbole und das kompakte Layout bleiben erhalten.
+Die kompakte Oberfläche, Offline-Bibliothek, Favoriten und vier Wiedergabetasten bleiben erhalten.
 
-## Neu
-- ↓ links vom Herz: Titel vollständig im Browser speichern. ✓: offline vorhanden; Tippen auf ✓ öffnet eine Sicherheitsabfrage. Erst die ausdrückliche Bestätigung löscht die Offline-Kopie. Abbrechen lässt sie unverändert.
-- ↓ mit Zahl in der bestehenden Filterzeile: lädt nur noch fehlende Titel, nacheinander. ✓ wenn alle gespeichert sind.
-- Gespeicherte Titel werden bevorzugt lokal abgespielt. Offline-Playlist und App-Oberfläche sind nach einem erfolgreichen Online-Aufruf ebenfalls offline verfügbar.
-- Bereits gespeicherte Dateien werden nicht erneut heruntergeladen.
+## Neu in 004.2
+- Tippen auf **wir.** (links), **UNSERE MUSIK** (rechts) und **Pull-to-Refresh** prüfen jetzt zuerst die App-Version und danach die Playlist.
+- Neue App-Version vorhanden: Bei laufender Musik erscheint eine Bestätigung, damit die Wiedergabe nicht unerwartet abbricht. Ohne laufende Wiedergabe wird die neue Version automatisch geladen.
+- Keine neue App-Version: Playlist und Offline-Markierungen werden aktualisiert, ohne die Ansicht neu zu starten.
+- App-Programmdateien werden beim Online-Aufruf bevorzugt frisch geladen; offline dient die zwischengespeicherte App als Fallback.
+- Offline-MP3s liegen weiterhin im separaten Cache `wir-audio-offline-v1` und werden beim Versionswechsel **nicht** gelöscht.
+- Die Sicherheitsabfrage vor dem Löschen eines gespeicherten Titels bleibt erhalten.
 
-## Korrektur in 004.1
-- Versehentliches Antippen des Häkchens löscht keine Datei mehr.
-- Vor dem Entfernen eines Offline-Titels wird eine Bestätigung verlangt.
-- Keine zusätzlichen Bedienelemente oder Playlist-Zeilen.
-- Bereits heruntergeladene Titel bleiben beim Update erhalten.
+## Update von 004.1 auf 004.2: Diese fünf Dateien hochladen
+Alle ins **Hauptverzeichnis** des GitHub-Repositories:
+1. `app.js` – Aktualisierungslogik
+2. `index.html` – neue Programmdatei-Versionen
+3. `sw.js` – Service Worker / App-Cache
+4. `version.json` – **neu**, enthält die veröffentlichte App-Version
+5. `README.md` – diese Dokumentation
 
-## Aktualisierung von 004 auf 004.1
-Im Hauptverzeichnis **genau diese vier Dateien ersetzen**: `app.js`, `index.html`, `sw.js`, `README.md`. `style.css`, Icons, Workflow, `audio/` und `playlist.json` bleiben unverändert.
-
-## Installation
-ZIP entpacken und die Dateien aus dem ZIP **im Hauptverzeichnis** des GitHub-Repositories hochladen. Den bestehenden `audio/`-Ordner und die generierte `playlist.json` **nicht löschen**. Die bestehende GitHub-Action unter `.github/workflows/` bleibt unverändert. Beim Browser-Upload können versteckte `.github`-Ordner ausgelassen werden; der Workflow ist bereits im Repository vorhanden.
+**Nicht ersetzen:** `style.css`, `manifest.webmanifest`, `icons/`, `audio/`, `playlist.json`, `generate_playlist.py`, `.github/workflows/update-playlist.yml`.
 
 ## Hinweise
-Der Speicher ist pro Browser/installierter Web-App getrennt und kann von iOS/macOS bereinigt werden. Die App muss beim Herunterladen geöffnet bleiben. Bereits geöffnete Musikstücke können bei einer Änderung der Datei auf GitHub veralten; eine Erkennung von geänderten Dateiinhalten benötigt zusätzliche Versionsdaten in der Playlist. Für zuverlässige Offline-Nutzung nach dem Update die App einmal online öffnen und Playlist aktualisieren.
+- Der erste Wechsel von 004.1 auf 004.2 kann noch einen **einmaligen normalen Seiten-Neustart** benötigen, weil 004.1 die neue Versionsprüfung noch nicht kennt. Danach funktionieren die drei Aktualisierungswege.
+- Nach dem Upload erst auf den erfolgreichen GitHub-Pages-Deploy warten. Auf iPhone und Mac die App einmal online öffnen.
+- Wenn ein Update während der Wiedergabe verschoben wurde, kann es über einen erneuten Tipp nach Ende der Wiedergabe übernommen werden.
+- Offline-Speicher wird vom Browser verwaltet und kann vom Betriebssystem bei Speicherknappheit bereinigt werden. Browser und installierte PWA können getrennte Speicherbereiche verwenden.
+- Geänderte MP3-Inhalte unter identischem Dateinamen werden weiterhin nicht automatisch neu heruntergeladen.

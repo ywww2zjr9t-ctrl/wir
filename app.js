@@ -2,6 +2,7 @@
 const $=id=>document.getElementById(id), audio=$('audio');
 let tracks=[],current=-1,filter='all',sort='original',playing=false;
 const OFFLINE_CACHE='wir-audio-offline-v1';let offlineFiles=new Set(),downloading=new Set(),downloadAllRunning=false,activeBlobUrl=null,loadToken=0;
+const APP_VERSION='004.2';
 const storageKey='wir-favorites-v1';const selectedKey='wir-selected-track-v2';let refreshing=false;let favorites=new Set(JSON.parse(localStorage.getItem(storageKey)||'[]'));
 const remember=()=>localStorage.setItem(storageKey,JSON.stringify([...favorites]));
 const fmt=s=>Number.isFinite(s)?`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`:'0:00';
@@ -81,12 +82,55 @@ async function refreshPlaylist({quiet=false}={}){
  }catch(e){if(!quiet)toast('Aktualisierung fehlgeschlagen · bestehende Playlist bleibt erhalten');}
  finally{refreshing=false}
 }
-function homeRefresh(){if(!$('playlist-shell').classList.contains('open')){$('playlist-shell').classList.add('open');$('toggle-list').setAttribute('aria-expanded','true')};$('track-list').scrollTop=0;refreshPlaylist()}
+let updateCheckRunning=false;
+async function checkAppUpdate(){
+ if(updateCheckRunning||!navigator.onLine)return false;
+ updateCheckRunning=true;
+ try{
+  const response=await fetch('./version.json?check='+Date.now(),{cache:'no-store'});
+  if(!response.ok)return false;
+  const info=await response.json();
+  if(info.version===APP_VERSION)return false;
+  const activePlayback=!audio.paused&&!audio.ended;
+  if(activePlayback&&!window.confirm('Neue App-Version '+info.version+' verfügbar.\n\nDie Wiedergabe wird beim Aktualisieren unterbrochen. Jetzt aktualisieren?')){
+   toast('App-Update verschoben · Musik läuft weiter');return true;
+  }
+  toast('Neue App-Version wird geladen …');
+  if('serviceWorker' in navigator){
+   try{
+    const reg=await navigator.serviceWorker.getRegistration();
+    if(reg){
+     // Ein neu installierter Worker übernimmt; Offline-Audio liegt in einem separaten Cache.
+     await reg.update();
+     if(reg.installing){await new Promise(resolve=>{
+      const worker=reg.installing;
+      if(worker.state==='activated'||worker.state==='redundant')return resolve();
+      worker.addEventListener('statechange',()=>{if(worker.state==='activated'||worker.state==='redundant')resolve()});
+      setTimeout(resolve,7000);
+     })}
+    }
+   }catch(e){/* Ohne Service Worker weiterhin online aktualisieren. */}
+  }
+  // Navigation erzwingt ein neues HTML; versionierte CSS/JS-URLs vermeiden alte Assets.
+  const url=new URL(location.href);url.searchParams.set('app_update',info.version);
+  location.replace(url.href);
+  return true;
+ }catch(e){return false}
+ finally{updateCheckRunning=false}
+}
+async function refreshEverything(){
+ if(!$('playlist-shell').classList.contains('open')){$('playlist-shell').classList.add('open');$('toggle-list').setAttribute('aria-expanded','true')}
+ $('track-list').scrollTop=0;
+ // Erst die App-Version prüfen; nur wenn kein Wechsel erfolgt die Playlist auffrischen.
+ if(await checkAppUpdate())return;
+ await refreshPlaylist();await refreshOfflineStatus();
+}
+function homeRefresh(){void refreshEverything()}
 $('home-brand').onclick=homeRefresh;$('home-tagline').onclick=homeRefresh;
 let pullStart=null,pullDistance=0;const indicator=$('pull-indicator');
 const isPlaylistScroll=(target)=>!!target.closest?.('.track-list');
 document.addEventListener('touchstart',e=>{if(e.touches.length!==1||isPlaylistScroll(e.target))return;pullStart=e.touches[0].clientY;pullDistance=0},{passive:true});
 document.addEventListener('touchmove',e=>{if(pullStart===null)return;pullDistance=Math.max(0,e.touches[0].clientY-pullStart);if(pullDistance>12){indicator.style.opacity='1';indicator.style.transform='translate(-50%,0)';indicator.textContent=pullDistance>75?'↑ Loslassen zum Aktualisieren':'↓ Zum Aktualisieren ziehen'}},{passive:true});
-document.addEventListener('touchend',()=>{if(pullStart!==null&&pullDistance>75)refreshPlaylist();pullStart=null;pullDistance=0;indicator.style.opacity='0';indicator.style.transform='translate(-50%,-15px)'},{passive:true});
+document.addEventListener('touchend',()=>{if(pullStart!==null&&pullDistance>75)void refreshEverything();pullStart=null;pullDistance=0;indicator.style.opacity='0';indicator.style.transform='translate(-50%,-15px)'},{passive:true});
 (async()=>{await refreshOfflineStatus();await refreshPlaylist({quiet:true});await refreshOfflineStatus()})();
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=004').then(reg=>reg.update()).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=0042',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{})}
