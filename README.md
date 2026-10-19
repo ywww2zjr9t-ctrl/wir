@@ -1,28 +1,29 @@
-# wir · Musikplayer 004.2 – App- und Playlist-Aktualisierung
+# wir · Musikplayer 004.3 – Sichere Offline-Löschung
 
-Die kompakte Oberfläche, Offline-Bibliothek, Favoriten und vier Wiedergabetasten bleiben erhalten.
+Version 004.3 baut auf Version 004.2 auf. Das Layout der Playlist und alle bisherigen Funktionen bleiben erhalten.
 
-## Neu in 004.2
-- Tippen auf **wir.** (links), **UNSERE MUSIK** (rechts) und **Pull-to-Refresh** prüfen jetzt zuerst die App-Version und danach die Playlist.
-- Neue App-Version vorhanden: Bei laufender Musik erscheint eine Bestätigung, damit die Wiedergabe nicht unerwartet abbricht. Ohne laufende Wiedergabe wird die neue Version automatisch geladen.
-- Keine neue App-Version: Playlist und Offline-Markierungen werden aktualisiert, ohne die Ansicht neu zu starten.
-- App-Programmdateien werden beim Online-Aufruf bevorzugt frisch geladen; offline dient die zwischengespeicherte App als Fallback.
-- Offline-MP3s liegen weiterhin im separaten Cache `wir-audio-offline-v1` und werden beim Versionswechsel **nicht** gelöscht.
-- Die Sicherheitsabfrage vor dem Löschen eines gespeicherten Titels bleibt erhalten.
+## Änderung in 004.3
 
-## Update von 004.1 auf 004.2: Diese fünf Dateien hochladen
-Alle ins **Hauptverzeichnis** des GitHub-Repositories:
-1. `app.js` – Aktualisierungslogik
-2. `index.html` – neue Programmdatei-Versionen
-3. `sw.js` – Service Worker / App-Cache
-4. `version.json` – **neu**, enthält die veröffentlichte App-Version
-5. `README.md` – diese Dokumentation
+Beim Antippen des Häkchens ✓ neben einem offline gespeicherten Titel erscheint nun ein zur App passender Bestätigungsdialog statt der Safari-Systemabfrage.
 
-**Nicht ersetzen:** `style.css`, `manifest.webmanifest`, `icons/`, `audio/`, `playlist.json`, `generate_playlist.py`, `.github/workflows/update-playlist.yml`.
+- **Titel behalten**: Die Offline-Datei bleibt erhalten (auch beim Schließen mit Escape).
+- **Titel löschen**: Nur die lokale Offline-Kopie dieses Titels wird entfernt. Der Titel bleibt in der Playlist und kann erneut heruntergeladen werden, solange er online verfügbar ist.
+- Keine zweite Sicherheitsabfrage und kein überflüssiger Hinweis auf „Abbrechen“ oder „OK“.
+- Herunterladen, Favoriten, Wiedergabe und Sammeldownload bleiben unverändert.
+
+## Update von 004.2 auf 004.3: Diese sechs Dateien hochladen
+
+Alle sechs Dateien liegen im **Hauptverzeichnis** des Update-ZIP und gehören ins **Hauptverzeichnis** des GitHub-Repositories:
+
+1. `app.js` – Bestätigungslogik
+2. `index.html` – Dialog und Versionsreferenzen
+3. `style.css` – Darstellung des Dialogs
+4. `sw.js` – aktualisierter App-Cache
+5. `version.json` – Version 004.3
+6. `README.md` – diese Dokumentation
+
+**Nicht ersetzen:** `manifest.webmanifest`, `icons/`, `audio/`, `playlist.json`, `generate_playlist.py`, `.github/workflows/update-playlist.yml`.
 
 ## Hinweise
-- Der erste Wechsel von 004.1 auf 004.2 kann noch einen **einmaligen normalen Seiten-Neustart** benötigen, weil 004.1 die neue Versionsprüfung noch nicht kennt. Danach funktionieren die drei Aktualisierungswege.
-- Nach dem Upload erst auf den erfolgreichen GitHub-Pages-Deploy warten. Auf iPhone und Mac die App einmal online öffnen.
-- Wenn ein Update während der Wiedergabe verschoben wurde, kann es über einen erneuten Tipp nach Ende der Wiedergabe übernommen werden.
-- Offline-Speicher wird vom Browser verwaltet und kann vom Betriebssystem bei Speicherknappheit bereinigt werden. Browser und installierte PWA können getrennte Speicherbereiche verwenden.
-- Geänderte MP3-Inhalte unter identischem Dateinamen werden weiterhin nicht automatisch neu heruntergeladen.
+
+Nach dem Upload den erfolgreichen GitHub-Pages-Deploy abwarten. In Version 004.2 kann über die App-Aktualisierung eine neue Version erkannt werden. Bereits offline gespeicherte Audiodateien bleiben in ihrem separaten Cache `wir-audio-offline-v1` erhalten. Wie bei jeder PWA kann der Browser diesen Speicher unter bestimmten Umständen selbst bereinigen.
